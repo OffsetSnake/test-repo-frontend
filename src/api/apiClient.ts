@@ -1,5 +1,5 @@
 import axios from "axios";
-import { addRandomBotToUsers } from "../utils/generatePlaceholder";
+import { addFixedBotsToUsers } from "../utils/generatePlaceholder";
 
 const apiClient = axios.create({
   baseURL: "https://jsonplaceholder.typicode.com",
@@ -7,7 +7,12 @@ const apiClient = axios.create({
 
 export const fetchUsers = async () => {
   const response = await apiClient.get("/users");
-  //Написать проверку на успешное получение users!
-  const usersWithBots = addRandomBotToUsers(response.data);
+  if (response.status !== 200) {
+    throw new Error(
+      `Ошибка получения пользователей: статус ${response.status}`
+    );
+  }
+  const usersWithBots = addFixedBotsToUsers(response.data);
+
   return usersWithBots;
 };

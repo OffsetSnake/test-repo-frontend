@@ -1,69 +1,74 @@
-import { Bot, Channel, User } from "../types/type";
+import { Bot, User } from "../types/type";
 
-export function addRandomBotToUsers(users: User[]): User[] {
-  const botNames: Bot["botName"][] = [
-    "Бот для продаж",
-    "Бот для поддержки клиентов",
-    "Тестовый",
-    "HR-бот (тестовый)",
-  ];
+const fixedMockBots: Bot[] = [
+  {
+    botName: "HR-бот (тестовый)",
+    status: "TestMe",
+    stats: { messages: 753, processed: 362, effectiveness: "48%" },
+    channel: { name: "Bitrix24", id: "id12345672", enabled: true },
+  },
+  {
+    botName: "Бот для продаж",
+    status: "Waiting",
+    stats: { messages: 191, processed: 176, effectiveness: "92%" },
+    channel: { name: "Telegram", id: "@telegram_channel_3", enabled: false },
+  },
+  {
+    botName: "Бот для поддержки клиентов",
+    status: "Typing",
+    stats: { messages: 619, processed: 609, effectiveness: "98%" },
+    channel: { name: "Bitrix24", id: "id12345674", enabled: true },
+  },
+  {
+    botName: "Тестовый",
+    status: "ConnectChannel",
+    stats: { messages: 85, processed: 69, effectiveness: "81%" },
+    channel: { name: "Telegram", id: "@telegram_channel_7", enabled: true },
+  },
+  {
+    botName: "Бот для продаж",
+    status: "Waiting",
+    stats: { messages: 439, processed: 234, effectiveness: "53%" },
+    channel: { name: "Telegram", id: "@telegram_channel_5", enabled: false },
+  },
+  {
+    botName: "HR-бот (тестовый)",
+    status: "Typing",
+    stats: { messages: 105, processed: 78, effectiveness: "74%" },
+    channel: { name: "Bitrix24", id: "id12345679", enabled: false },
+  },
+  {
+    botName: "Тестовый",
+    status: "Waiting",
+    stats: { messages: 800, processed: 759, effectiveness: "95%" },
+    channel: { name: "Telegram", id: "@telegram_channel_1", enabled: true },
+  },
+  {
+    botName: "Бот для поддержки клиентов",
+    status: "ConnectChannel",
+    stats: { messages: 230, processed: 215, effectiveness: "93%" },
+    channel: { name: "Bitrix24", id: "id12345670", enabled: true },
+  },
+  {
+    botName: "Бот для продаж",
+    status: "TestMe",
+    stats: { messages: 520, processed: 400, effectiveness: "77%" },
+    channel: { name: "Telegram", id: "@telegram_channel_2", enabled: false },
+  },
+  {
+    botName: "HR-бот (тестовый)",
+    status: "Typing",
+    stats: { messages: 1000, processed: 900, effectiveness: "90%" },
+    channel: { name: "Bitrix24", id: "id12345671", enabled: true },
+  },
+];
 
-  const statuses: Bot["status"][] = [
-    "Typing",
-    "Waiting",
-    "TestMe",
-    "ConnectChannel",
-  ];
-
-  function randInt(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  function generateChannels(): Channel[] {
-    const channels: Channel[] = [];
-
-    for (let i = 0; i < 10; i++) {
-      channels.push({
-        name: "Bitrix24",
-        id: `id1234567${i}`,
-        enabled: Math.random() < 0.5,
-      });
-    }
-
-    for (let i = 0; i < 10; i++) {
-      channels.push({
-        name: "Telegram",
-        id: `@telegram_channel_${i}`,
-        enabled: Math.random() < 0.5,
-      });
-    }
-
-    return channels;
-  }
-
-  const allChannels = generateChannels();
-
-  return users.map((user) => {
-    const randomChannel = allChannels[randInt(0, allChannels.length - 1)];
-
-    const messages = randInt(0, 1000);
-    const processed = randInt(0, messages);
-
-    const effectiveness =
-      messages === 0 ? "0%" : `${Math.round((processed / messages) * 100)}%`;
-
+export function addFixedBotsToUsers(users: User[]): User[] {
+  return users.map((user, i) => {
+    const bot = fixedMockBots[i % fixedMockBots.length];
     return {
       ...user,
-      bot: {
-        botName: botNames[randInt(0, botNames.length - 1)],
-        status: statuses[randInt(0, statuses.length - 1)],
-        stats: {
-          messages,
-          processed,
-          effectiveness,
-        },
-        channel: randomChannel,
-      },
+      bot,
     };
   });
 }

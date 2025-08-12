@@ -1,10 +1,18 @@
-import { createSignal, createMemo, Show, For } from "solid-js";
+import {
+  createSignal,
+  createMemo,
+  Show,
+  For,
+  onMount,
+  onCleanup,
+} from "solid-js";
 import { createQuery } from "@tanstack/solid-query";
 import { fetchUsers } from "./api/apiClient";
 import Card from "./components/Card/Card";
 import Loader from "./components/Loader/Loader";
 
-const TOTAL_USERS = 10; // Всего пользователей в jsonplaceholder
+const TOTAL_USERS = 10;
+const REFRESH_INTERVAL = 600000;
 
 function App() {
   const [page, setPage] = createSignal(1);
@@ -17,6 +25,7 @@ function App() {
     () => fetchUsers({ start: start(), limit: limit() }),
     {
       keepPreviousData: true,
+      structuralSharing: false,
       retry: 1,
       onError: (error) => {
         console.error("Ошибка при загрузке пользователей:", error);
@@ -31,12 +40,30 @@ function App() {
 
   const totalPages = createMemo(() => Math.ceil(TOTAL_USERS / limit()));
 
+  onMount(() => {
+    const intervalId = setInterval(() => {
+      query.refetch();
+    }, REFRESH_INTERVAL);
+
+    onCleanup(() => clearInterval(intervalId));
+  });
+
   return (
-    <div class="max-w-5xl mx-auto p-6">
+    <div class="mx-auto p-6">
       <h1 class="text-2xl font-bold mb-6 text-center text-black">Наши Боты</h1>
+
       <Show when={!query.isLoading && !query.isError}>
+        <div class="flex justify-center mb-4">
+          <button
+            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            onClick={() => query.refetch()}
+            disabled={query.isFetching}
+          >
+            {query.isFetching ? "Обновляю..." : "Обновить"}
+          </button>
+        </div>
         <div class="mb-4 flex justify-center gap-4 items-center">
-          <span>Показывать по:</span>
+          <span class="text-black">Показывать по:</span>
           {[4, 8, 12].map((num) => (
             <button
               class={`px-3 py-1 rounded ${
@@ -53,27 +80,7 @@ function App() {
             </button>
           ))}
         </div>
-      </Show>
-
-      <Show
-        when={!query.isError}
-        fallback={
-          <p class="text-red-600 font-semibold text-center p-4">
-            Сервис недоступен:{" "}
-            {query.error instanceof Error
-              ? query.error.message
-              : String(query.error)}
-          </p>
-        }
-      >
-        <Show when={!query.isLoading} fallback={<Loader />}>
-          <ul class="flex flex-wrap gap-6 w-full justify-center">
-            <For each={query.data}>{(user) => <Card user={user} />}</For>
-          </ul>
-        </Show>
-      </Show>
-      <Show when={!query.isLoading && !query.isError}>
-        <div class="flex justify-center mt-6 gap-2">
+        <div class="flex justify-center my-6 gap-2">
           <button
             class="px-3 py-1 rounded border disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={page() === 1}
@@ -105,6 +112,23 @@ function App() {
             Вперед
           </button>
         </div>
+      </Show>
+      <Show
+        when={!query.isError}
+        fallback={
+          <p class="text-red-600 font-semibold text-center p-4">
+            Сервис недоступен:{" "}
+            {query.error instanceof Error
+              ? query.error.message
+              : String(query.error)}
+          </p>
+        }
+      >
+        <Show when={!query.isLoading} fallback={<Loader />}>
+          <ul class="flex flex-wrap gap-6 justify-center">
+            <For each={query.data}>{(user) => <Card user={user} />}</For>
+          </ul>
+        </Show>
       </Show>
     </div>
   );

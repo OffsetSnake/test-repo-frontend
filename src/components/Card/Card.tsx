@@ -1,4 +1,6 @@
-import { Component, createSignal, For } from "solid-js";
+import { Component, createSignal } from "solid-js";
+import debounce from "lodash/debounce";
+import axios from "axios";
 import { User } from "../../types/type";
 import Icon from "../../icons/Icon";
 
@@ -20,9 +22,26 @@ const COLOR_STATUS = {
   ConnectChannel: "#3751DB",
 };
 
+const updateUserName = async ({ id, name }: { id: number; name: string }) => {
+  const response = await axios.patch(
+    `https://jsonplaceholder.typicode.com/users/${id}`,
+    { name }
+  );
+  return response.data;
+};
+
 const Card: Component<CardProps> = ({ user }) => {
   const [rotated, setRotated] = createSignal(false);
-  console.log("user", user);
+
+  const debouncedUpdate = debounce((value) => {
+    updateUserName({ id: user.id, name: value });
+  }, 800);
+
+  function onNameChange(e: Event) {
+    const newName = (e.target as HTMLInputElement).value;
+    debouncedUpdate(newName);
+  }
+
   const stats = [
     { label: "Сообщений", value: user.bot?.stats.messages },
     { label: "Отработано", value: user.bot?.stats.processed },
@@ -36,6 +55,7 @@ const Card: Component<CardProps> = ({ user }) => {
       ? "NotificationOn"
       : "NotificationOff";
   }
+
   return (
     <div class="w-[330px] rounded-2xl bg-white text-black p-5 text-xs font-semibold py-[20px]">
       <div class="flex flex-row items-center justify-between">
@@ -81,6 +101,15 @@ const Card: Component<CardProps> = ({ user }) => {
           </button>
         )}
       </div>
+      <div class="mt-3 flex flex-col gap-[6px]">
+        <span>Редактируемое поле</span>
+        <input
+          class="w-full border border-gray-300 rounded px-2 py-1 text-black text-sm bg-white"
+          type="text"
+          value={user.name}
+          onInput={onNameChange}
+        />
+      </div>
       <div class="py-2 flex justify-between">
         <div class="font-semibold text-xl mb-2 overflow-hidden whitespace-nowrap overflow-ellipsis">
           {user.bot?.botName}
@@ -88,18 +117,16 @@ const Card: Component<CardProps> = ({ user }) => {
         <Icon name={getNotificationIconName(user.bot?.status)} />
       </div>
       <div class="flex justify-between">
-        <For each={stats}>
-          {(stat, i) => (
-            <div
-              class={`flex flex-col px-3 ${
-                i() === 0 ? "pl-0" : "border-l border-gray-200"
-              } ${i() === stats.length - 1 ? "pr-0" : ""}`}
-            >
-              <span class="text-[11px] font-semibold pb-1">{stat.label}</span>
-              <span class="text-[20px] font-semibold">{stat.value}</span>
-            </div>
-          )}
-        </For>
+        {stats.map((stat, i) => (
+          <div
+            class={`flex flex-col px-3 ${
+              i === 0 ? "pl-0" : "border-l border-gray-200"
+            } ${i === stats.length - 1 ? "pr-0" : ""}`}
+          >
+            <span class="text-[11px] font-semibold pb-1">{stat.label}</span>
+            <span class="text-[20px] font-semibold">{stat.value}</span>
+          </div>
+        ))}
       </div>
       <button class="text-white font-semibold bg-[#11253E] text-[14px] my-[14px] w-full flex justify-center gap-[6px] py-[14px] rounded-[10px]">
         <Icon name="Pencil" />

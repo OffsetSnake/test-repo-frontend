@@ -15,5 +15,6 @@ export const fetchUsers = async ({ start = 0, limit = 4 }) => {
     );
   }
   const usersWithBots = addFixedBotsToUsers(response.data);
+  console.log("usersWithBots", usersWithBots);
   return usersWithBots;
 };

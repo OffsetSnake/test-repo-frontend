@@ -1,4 +1,4 @@
-import { Component, For } from "solid-js";
+import { Component, createSignal, For } from "solid-js";
 import { User } from "../../types/type";
 import Icon from "../../icons/Icon";
 
@@ -21,6 +21,7 @@ const COLOR_STATUS = {
 };
 
 const Card: Component<CardProps> = ({ user }) => {
+  const [rotated, setRotated] = createSignal(false);
   console.log("user", user);
   const stats = [
     { label: "Сообщений", value: user.bot?.stats.messages },
@@ -132,9 +133,18 @@ const Card: Component<CardProps> = ({ user }) => {
           <span class=" text-sm font-medium text-[#0CCA1F] dark:text-[#0CCA1F]"></span>
         </label>
       </div>
-      <button class="text-[#8695A7] bg-[#fff] font-semibold text-[13px] mt-[14px] flex items-center p-0 gap-[6px] w-max mx-auto border-0 focus:outline-none focus:ring-0">
+      <button
+        class="text-[#8695A7] bg-[#fff] font-semibold text-[13px] mt-[14px] flex items-center p-0 gap-[6px] w-max mx-auto border-0 focus:outline-none focus:ring-0"
+        onClick={() => setRotated(!rotated())}
+      >
         Детали
-        <Icon name="ArrowDown" />
+        <span
+          class={`inline-block transition-transform duration-200 ${
+            rotated() ? "rotate-180" : ""
+          }`}
+        >
+          <Icon name="ArrowDown" />
+        </span>
       </button>
     </div>
   );

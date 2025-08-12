@@ -59,7 +59,7 @@ function App() {
             onClick={() => query.refetch()}
             disabled={query.isFetching}
           >
-            {query.isFetching ? "Обновляю..." : "Обновить"}
+            {query.isFetching ? "Обновление данных..." : "Обновить"}
           </button>
         </div>
         <div class="mb-4 flex justify-center gap-4 items-center">

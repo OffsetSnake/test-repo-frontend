@@ -1,28 +1,35 @@
-## Usage
+# Отчет о проделанной работе
 
-```bash
-$ npm install # or pnpm install or yarn install
-```
+Выполнены все поставленные задачи:
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+1. **Добавлен Loader** на первичную загрузку данных с сервера.  
+   Реализован отлов ошибок с помощью `alert()`, вывода в консоль и отображения ошибок в UI.
 
-## Available Scripts
+2. **Верстка по макету**
 
-In the project directory, you can run:
+   > _Точное следование дизайну не требуется и невозможно._  
+   > Это показалось мне вызовом, поэтому немного поясню:
 
-### `npm run dev`
+   - На jsonplaceholder отсутствует подходящая структура данных, поэтому была создана собственная моковая версия.
+   - При получении пользователей с сервера каждому из них сопоставлен соответствующий бот путём сравнения их id. В итоге получены готовые моковые данные для макета.
+   - На макете реализованы интерактивные элементы: индикатор «Печатает...», тумблер, кнопка «Детали», а также разные вариации иконок в зависимости от данных.
+   - Для стилизации использован TailwindCSS — я давно с ним не работал, поэтому решил освежить навыки, реализовав практически все стили и некоторые нестандартные элементы.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+3. **Реализована пагинация**  
+   Было интересно снова поработать с Tanstack, которого на прошлом проекте не использовали.
 
-### `npm run build`
+4. **Добавлена кнопка «Обновить»** и настроено автоматическое обновление каждые 10 минут.
 
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
+5. **Реализован PATCH-запрос на сервер**  
+   Единственное — не сделана визуальная индикация, но запрос видно в network.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+---
 
-## Deployment
+### Итоги
 
-Learn more about deploying your application with the [documentations](https://vite.dev/guide/static-deploy.html)
+Особых сложностей не возникло.  
+Интересными для меня стали:
+
+- TailwindCSS,
+- Tanstack,
+- процесс пагинации.

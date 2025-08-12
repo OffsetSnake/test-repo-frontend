@@ -11,6 +11,7 @@ export interface BotStats {
 }
 
 export interface Bot {
+  id: number;
   botName:
     | "Бот для продаж"
     | "Бот для поддержки клиентов"

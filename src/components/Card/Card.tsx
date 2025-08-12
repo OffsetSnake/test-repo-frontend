@@ -120,7 +120,11 @@ const Card: Component<CardProps> = ({ user }) => {
           </span>
         </div>
         <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" class="sr-only peer" />
+          <input
+            type="checkbox"
+            class="sr-only peer"
+            checked={user.bot?.channel.enabled}
+          />
           <div
             class="relative w-11 h-6 rounded-full box-content
            bg-white border border-[#E1E6EC]

@@ -133,7 +133,7 @@ const Card: Component<CardProps> = ({ user }) => {
         Настройка чат-бота
       </button>
       <div class="flex items-center gap-[6px]">
-        <span class="text-[#8695A7] text-[11px], font-medium">КАНАЛЫ</span>
+        <span class="text-[#8695A7] text-[11px] font-medium">КАНАЛЫ</span>
         <Icon name="Info" />
       </div>
       <div class="flex rounded-[10px] px-[12px] py-[14px] w-full justify-between items-center bg-[#F0F4FA] mt-[12px]">

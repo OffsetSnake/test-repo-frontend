@@ -1,6 +1,6 @@
 import { Bot, User } from "../types/type";
 
-const fixedMockBots: (Bot & { id: number })[] = [
+const fixedMockBots: Bot[] = [
   {
     id: 1,
     botName: "HR-бот (тестовый)",
